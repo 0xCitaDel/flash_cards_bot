@@ -21,6 +21,8 @@ class LessonBebris(Base):
     video_nubmer: Mapped[list[int]] = mapped_column(
         sa.String, unique=False, nullable=False
     )
+    def __repr__(self) -> str:
+        return f"LessonBebris(id={self.id!r}, playlist_id={self.playlist_id!r}, lesson_title={self.lesson_title!r})"
 
 
 class LessonStatisticBebris(Base):
@@ -44,3 +46,6 @@ class LessonStatisticBebris(Base):
     created_at: Mapped[datetime.datetime] = mapped_column(
         server_default=sa.text("TIMEZONE('utc', now())")
     )
+
+    def __repr__(self) -> str:
+        return f"LessonStatisticBebris(id={self.id!r}, user_id={self.user_id!r}, lesson_id={self.lesson_id!r})"

@@ -10,7 +10,7 @@ from bot.states import MainSG
 main_window = Window(
     Const('Главное меню, выберите нужный вам раздел'),
     Button(
-        Const('Английский по плейлистам'),
+        Const('📚 Английский по плейлистам'),
         id='bebris_btn',
         on_click=handlers.bebris_dialog_start
     ),

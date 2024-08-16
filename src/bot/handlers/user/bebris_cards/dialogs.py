@@ -1,21 +1,21 @@
 import operator
 
-from aiogram.types import CallbackQuery
-from aiogram_dialog import Dialog, DialogManager, Window
+from aiogram_dialog import Dialog, Window
 from aiogram_dialog.widgets.text import Const, Format, Jinja, List
 from aiogram_dialog.widgets.kbd import (
     Button,
-    Checkbox,
     Group,
-    ManagedCheckbox,
     Radio,
     Row,
     Select,
     ScrollingGroup
 )
 
+from bot.aiogram_dialog.scrolling_group import ScrollingGroupCustom
+
 from . import getters
 from . import handlers
+from bot.handlers.handlers import main_menu 
 from bot.states import BebrisDialogSG
 
 
@@ -36,20 +36,29 @@ choice_playlist_window = Window(
         height=5,
         hide_on_single_page=True,
     ),
+    Button(Const('◀ Назад'), id='main_menu', on_click=main_menu),
     getter=getters.playlist_getter,
     state=BebrisDialogSG.start
 )
 
 
 choice_lesson_window = Window(
-    Const('Выбери номер урока\n'),
+    Jinja(
+        '<b>--- Памятка ---</b>\n\n'
+        # '<blockquote>Прогресс - это усреднённый процент правильных ответов за последние три урока.</blockquote>\n\n'
+        '<blockquote>Прогресс показывает средний процент правильных ответов за последние три урока.</blockquote>\n\n'
+        '🔴 - <i>Прогресс меньше 60%</i>\n'
+        '🟠 - <i>Прогресс 60-90%</i>\n'
+        '🟢 - <i>Прогресс 90-100%</i>\n\n'
+        '<b>--- Выбери урок ---</b>\n\n'
+    ),
     List(
-        Format('№{item[0]} - {item[1]}'),
+        Format('{item[3]} <b>№{item[0]}</b>  {item[1]} {item[2]}'),
         page_size=8,
         id='lessons_scroll',
         items='lessons'
     ),
-    ScrollingGroup(
+    ScrollingGroupCustom(
         Group(
             Select(
                 Format('{item[0]}'),
@@ -64,20 +73,11 @@ choice_lesson_window = Window(
         height=1,
         hide_on_single_page=True,
     ),
+    Button(Const('☰ Mеню'), id='main_menu', on_click=main_menu),
+    parse_mode='HTML',
     getter=getters.lesson_getter,
     state=BebrisDialogSG.choice_lesson
 )
-
-async def checkbox_clicked(callback: CallbackQuery, checkbox: ManagedCheckbox,
-                           dialog_manager: DialogManager):
-    dialog_manager.dialog_data.update(is_checked=checkbox.is_checked())
-
-
-# Геттер
-async def getter(dialog_manager: DialogManager, **kwargs):
-    checked = dialog_manager.dialog_data.get('is_checked')
-    return {'checked': checked,
-            'not_checked': not checked}
 
 preparation_window = Window(
     Jinja(
@@ -85,13 +85,6 @@ preparation_window = Window(
         '⚙️ <b>Режимы тренировок:</b>\n'
         'RU2EN - <i>с русского на английский</i>\n'
         'EN2RU - <i>с английского на русский</i>\n'
-    ),
-    Checkbox(
-        checked_text=Const('[✔️] Отключить'),
-        unchecked_text=Const('[ ] Включить'),
-        id='checkbox',
-        default=False,
-        on_state_changed=checkbox_clicked,
     ),
     Radio(
         checked_text=Format('🔘 {item[0]}'),
@@ -115,8 +108,8 @@ flashcard_window = Window(
         '🔴 {{ total_wrong_answers }} - {{ total_correct_answers }} 🟢 ({{ accuracy_percent }}%)'
     ),
     Row(
-        Button(Const('👎'), id='wrong', on_click=handlers.next_card_or_completion),
-        Button(Const('👍'), id='correct', on_click=handlers.next_card_or_completion),
+        Button(Const('Не помню'), id='wrong', on_click=handlers.next_card_or_completion),
+        Button(Const('Помню'), id='correct', on_click=handlers.next_card_or_completion),
     ),
     parse_mode='HTML',
     getter=getters.next_card_getter,

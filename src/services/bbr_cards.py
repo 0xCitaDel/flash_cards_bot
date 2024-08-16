@@ -24,17 +24,21 @@ class BebrisService:
         ]
         return playlist_items
 
-    async def get_lessons(self, playlist_id: int) -> list:
+    async def get_lessons(self, playlist_id: int, user_id) -> list:
         """
         Retrieve all lessons for a specific playlist.
 
         :param playlist_id: The ID of the playlist.
         :return: A list of tuples with lesson details (id, title).
         """
-        lessons: Sequence[LessonBebris] = await self.db.bbr_lesson.get_by_playlist_id(
-            playlist_id=playlist_id
+        lessons = await self.db.bbr_lesson.get_lessons_with_statistics(
+            playlist_id=playlist_id,
+            user_id=user_id
         )
-        lesson_items = [(i.id, i.lesson_title) for i in lessons]
+        accuracy_emoji = lambda x: '⚫️' if x is None else '🔴' if x < 60 else '🟠' if x < 90 else '🟢'
+        accuracy = lambda x: '' if x is None else f' | {x}%'
+
+        lesson_items = [(i[0], i[1], accuracy(i[2]), accuracy_emoji(i[2])) for i in lessons]
         return lesson_items
 
     async def get_cards_and_create_dialog_data(self, lesson_id: int) -> dict:

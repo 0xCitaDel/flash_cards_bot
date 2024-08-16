@@ -11,11 +11,12 @@ async def playlist_getter(db: Database, **kwargs):
 
 async def lesson_getter(dialog_manager: DialogManager, db: Database, **kwargs):
     data = dialog_manager.dialog_data
+    user_id = dialog_manager.middleware_data['user'].id
 
     if not data.get('lessons'):
         playlist_id = data['playlist_id']
-        data['lessons'] = await BebrisService(db).get_lessons(playlist_id)
-    return {'lessons': data['lessons']}
+        data['lessons'] = await BebrisService(db).get_lessons(playlist_id, user_id)
+    return {'lessons': data['lessons'], 'status': data['lessons'][2]}
 
 
 async def preparation_getter(
@@ -61,6 +62,7 @@ async def next_card_getter(
         'total_wrong_answers': data['total_wrong_answers'],
         'accuracy_percent': data['accuracy_percent']
     }
+
 
 async def conclusion_getter(
     dialog_manager: DialogManager,

@@ -1,7 +1,8 @@
 from collections.abc import Sequence
 from typing import Optional
 
-from sqlalchemy import select, ScalarResult
+from sqlalchemy import  select, ScalarResult
+from sqlalchemy.sql import func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.models.bbr_models import LessonBebris, LessonStatisticBebris
@@ -16,6 +17,35 @@ class LessonBebrisRepo(AbstractRepository[LessonBebris]):
         super().__init__(type_model=LessonBebris, session=session)
 
     
+    async def get_lessons_with_statistics(self, playlist_id, user_id):
+        subquery = select(
+            LessonStatisticBebris.lesson_id,
+            LessonStatisticBebris.user_id,
+            func.round(func.avg(LessonStatisticBebris.accuracy)\
+                .over(
+                    partition_by=[LessonStatisticBebris.lesson_id, LessonStatisticBebris.user_id],
+                    order_by=LessonStatisticBebris.created_at.desc(),
+                    rows=(0, 2)
+                )).label('avg_accuracy'),
+            func.row_number()\
+            .over(
+                partition_by=LessonStatisticBebris.lesson_id,
+                order_by=LessonStatisticBebris.created_at.desc()
+            ).label('rn')
+        ).where(LessonStatisticBebris.user_id == user_id)\
+        .cte('ranked_stats')
+
+        query = (
+            select(
+                LessonBebris.id,
+                LessonBebris.lesson_title,
+                subquery.c.avg_accuracy
+            )
+            .outerjoin(subquery, LessonBebris.id == subquery.c.lesson_id)
+            .where(((subquery.c.rn == 1) |  (subquery.c.lesson_id == None)) & (LessonBebris.playlist_id == playlist_id))
+        )
+        return (await self.session.execute(query)).all()
+
     async def get_by_playlist_id(self, playlist_id) -> Sequence[LessonBebris]:
         result = await self.get_by_where(
             LessonBebris.playlist_id==playlist_id
