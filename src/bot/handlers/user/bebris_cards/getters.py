@@ -25,8 +25,15 @@ async def preparation_getter(
     **kwargs
 ) -> dict:
     dialog_manager.dialog_data['reverse_mode'] = dialog_manager.find('radio_reverse_mode').get_checked()
+    return {'first_cards': dialog_manager.dialog_data['all_cards'][:3] }
 
-    return {'empty': 0}
+
+async def show_all_cards_getter(
+    dialog_manager: DialogManager,
+    db: Database,
+    **kwargs
+) -> dict:
+    return {'all_cards': dialog_manager.dialog_data['all_cards']}
 
 
 async def next_card_getter(

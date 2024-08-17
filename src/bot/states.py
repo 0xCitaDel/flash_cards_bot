@@ -8,6 +8,8 @@ class MainSG(StatesGroup):
 class BebrisDialogSG(StatesGroup):
     start = State()
     choice_lesson = State()
-    preparation= State()
+    preparation = State()
+    show_all_cards = State()
     next_card = State()
+    lesson_exit= State()
     conclusion = State()

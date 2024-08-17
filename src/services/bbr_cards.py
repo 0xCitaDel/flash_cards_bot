@@ -1,4 +1,6 @@
+import random as rand
 from collections.abc import Sequence
+
 from db.database import Database
 from db.models.bbr_models.flash_card import FlashCardBebris
 from db.models.bbr_models.lesson import LessonBebris
@@ -26,7 +28,7 @@ class BebrisService:
 
     async def get_lessons(self, playlist_id: int, user_id) -> list:
         """
-        Retrieve all lessons for a specific playlist.
+        Retrieve all lessons for a specific playlist with accuracy statistics.
 
         :param playlist_id: The ID of the playlist.
         :return: A list of tuples with lesson details (id, title).
@@ -35,8 +37,8 @@ class BebrisService:
             playlist_id=playlist_id,
             user_id=user_id
         )
-        accuracy_emoji = lambda x: '⚫️' if x is None else '🔴' if x < 60 else '🟠' if x < 90 else '🟢'
         accuracy = lambda x: '' if x is None else f' | {x}%'
+        accuracy_emoji = lambda x: '⚫️' if x is None else '🔴' if x < 60 else '🟠' if x < 90 else '🟢'
 
         lesson_items = [(i[0], i[1], accuracy(i[2]), accuracy_emoji(i[2])) for i in lessons]
         return lesson_items
@@ -51,7 +53,7 @@ class BebrisService:
         cards: Sequence[FlashCardBebris] = await self.db.bbr_flash_card.get_by_lesson_id(
             lesson_id=lesson_id
         )
-        all_cards = [(i.id, i.front_side, i.back_side) for i in cards]
+        all_cards = [(i.id, i.front_side, i.back_side, pos + 1) for pos, i in enumerate(cards)]
 
         return {
             # Information about the current card and lesson

@@ -1,3 +1,5 @@
+import random
+
 from aiogram.types import CallbackQuery
 from aiogram_dialog import DialogManager
 from aiogram_dialog.widgets.kbd import Button, Select
@@ -55,14 +57,38 @@ async def prepare_lesson_data(
     await manager.switch_to(BebrisDialogSG.preparation)
 
 
+async def lesson_exit(
+    callback: CallbackQuery,
+    widget: Button,
+    manager: DialogManager
+):
+    """
+    Need here...
+    """
+    await manager.switch_to(BebrisDialogSG.lesson_exit)
+
+
+async def show_all_cards(
+    callback: CallbackQuery,
+    widget: Button,
+    manager: DialogManager
+):
+    """
+    Need here...
+    """
+    await manager.switch_to(BebrisDialogSG.show_all_cards)
+
+
 async def play_cards(
     callback: CallbackQuery,
     widget: Button,
     manager: DialogManager
 ):
     """
-    Handler switches the state to start playing flashcards.
+    Handler shuffle and switches the state to start playing flashcards.
     """
+    all_cards = manager.dialog_data['all_cards']
+    random.shuffle(all_cards)
     await manager.switch_to(BebrisDialogSG.next_card)
 
 
