@@ -24,17 +24,23 @@ class FlashCardBebris(Base):
 
 
 class FlashCardStatisticBebris(Base):
-    __tablename__ = 'bebris_flash_card_statistics'
+    __tablename__ = 'bebris_flash_cards_statistics'
 
     user_id: Mapped[int] = mapped_column(
         sa.ForeignKey('users.id'), unique=False, nullable=False
     )
+    playlist_id: Mapped[int] = mapped_column(
+        sa.ForeignKey('bebris_flash_cards.id'), unique=False, nullable=False
+    )
+    lesson_id: Mapped[int] = mapped_column(
+        sa.ForeignKey('bebris_flash_cards.id'), unique=False, nullable=False
+    )
     flashcard_id: Mapped[int] = mapped_column(
         sa.ForeignKey('bebris_flash_cards.id'), unique=False, nullable=False
     )
-    is_correct: Mapped[bool] = mapped_column(
-        sa.Boolean, unique=False, nullable=False
+    correct_count: Mapped[int] = mapped_column(
+        sa.Integer, unique=False, nullable=False, default=0
     )
-    created_at: Mapped[datetime.datetime] = mapped_column(
-        server_default=sa.text("TIMEZONE('utc', now())")
+    last_result: Mapped[bool] = mapped_column(
+        sa.Boolean, unique=False, nullable=False
     )

@@ -13,3 +13,6 @@ class BebrisDialogSG(StatesGroup):
     next_card = State()
     lesson_exit= State()
     conclusion = State()
+
+class BebrisTrainDialogSG(StatesGroup):
+    choice_repeat_lesson = State()

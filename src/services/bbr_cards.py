@@ -26,7 +26,7 @@ class BebrisService:
         ]
         return playlist_items
 
-    async def get_lessons(self, playlist_id: int, user_id) -> list:
+    async def get_lessons(self, user_id, playlist_id: int) -> list:
         """
         Retrieve all lessons for a specific playlist with accuracy statistics.
 
@@ -38,7 +38,8 @@ class BebrisService:
             user_id=user_id
         )
         accuracy = lambda x: '' if x is None else f' | {x}%'
-        accuracy_emoji = lambda x: '⚫️' if x is None else '🔴' if x < 60 else '🟠' if x < 90 else '🟢'
+        accuracy_emoji = lambda x: '⚫️' if x is None else '🔴'\
+            if x < 60 else '🟠' if x < 90 else '🟢'
 
         lesson_items = [(i[0], i[1], accuracy(i[2]), accuracy_emoji(i[2])) for i in lessons]
         return lesson_items
@@ -100,6 +101,14 @@ class BebrisService:
             correct_answers=len(data['correct_answer_ids']),
             wrong_answers=len(data['wrong_answer_ids']),
             accuracy=data['accuracy_percent']
+        )
+        await self.db.bbr_flash_card_statistic.new(
+            user_id=user_id,
+            playlist_id=data['playlist_id'],
+            lesson_id=data['lesson_id'],
+            flashcard_ids=data['wrong_answer_ids'],
+            correct_count=0,
+            last_result=False
         )
         await self.db.session.commit()
 

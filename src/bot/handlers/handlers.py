@@ -12,7 +12,7 @@ async def bebris_dialog_start(
     ):
     await manager.start(
         BebrisDialogSG.start, 
-        show_mode=ShowMode.DELETE_AND_SEND
+        # show_mode=ShowMode.DELETE_AND_SEND
     )
 
 async def main_menu(

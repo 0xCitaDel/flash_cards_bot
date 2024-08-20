@@ -4,24 +4,21 @@ from db.database import Database
 from services import BebrisService
 
 
+async def repeat_lesson_getter(dialog_manager: DialogManager, **kwargs):
+    return {'playlists': 1}
+
+
 async def playlist_getter(db: Database, **kwargs):
     items = await BebrisService(db).get_playlists()
     return {'playlists': items}
 
 
-async def lesson_getter(dialog_manager: DialogManager, db: Database, **kwargs):
-    data = dialog_manager.dialog_data
-    user_id = dialog_manager.middleware_data['user'].id
-
-    if not data.get('lessons'):
-        playlist_id = data['playlist_id']
-        data['lessons'] = await BebrisService(db).get_lessons(playlist_id, user_id)
-    return {'lessons': data['lessons'], 'status': data['lessons'][2]}
+async def lessons_getter(dialog_manager: DialogManager, **kwargs):
+    return {'lessons': dialog_manager.dialog_data['lessons']}
 
 
 async def preparation_getter(
     dialog_manager: DialogManager,
-    db: Database,
     **kwargs
 ) -> dict:
     dialog_manager.dialog_data['reverse_mode'] = dialog_manager.find('radio_reverse_mode').get_checked()
@@ -30,7 +27,6 @@ async def preparation_getter(
 
 async def show_all_cards_getter(
     dialog_manager: DialogManager,
-    db: Database,
     **kwargs
 ) -> dict:
     return {'all_cards': dialog_manager.dialog_data['all_cards']}
@@ -38,7 +34,6 @@ async def show_all_cards_getter(
 
 async def next_card_getter(
     dialog_manager: DialogManager,
-    db: Database, 
     **kwargs
 ) -> dict:
     """
@@ -73,10 +68,10 @@ async def next_card_getter(
 
 async def conclusion_getter(
     dialog_manager: DialogManager,
-    db: Database,
     **kwargs
 ):
     data = dialog_manager.dialog_data
-    user_id = dialog_manager.middleware_data['user'].id
-    await BebrisService(db).save_lesson_result(user_id, data)
-    return {'data': data['correct_answer_ids'], 'data2': data['wrong_answer_ids']}
+    return {
+        'data': data['correct_answer_ids'],
+        'data2': data['wrong_answer_ids']
+    }

@@ -68,12 +68,11 @@ class LessonStatisticBebrisRepo(AbstractRepository[LessonStatisticBebris]):
             wrong_answers: int,
             accuracy: int,
     ) -> None:
-        await self.session.merge(
-            LessonStatisticBebris(
-                user_id=user_id,
-                lesson_id=lesson_id,
-                correct_answers=correct_answers,
-                wrong_answers=wrong_answers,
-                accuracy=accuracy
-            )
-        )
+        data = {
+            'user_id': user_id,
+            'lesson_id': lesson_id,
+            'correct_answers': correct_answers,
+            'wrong_answers': wrong_answers,
+            'accuracy': accuracy,
+        }
+        await self.session.merge(LessonStatisticBebris(**data))

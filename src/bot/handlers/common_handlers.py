@@ -8,9 +8,6 @@ async def go_back(
         widjet: Button,
         dialog_manager: DialogManager
     ):
-    print('******************************************************************')
-    print(dialog_manager.dialog_data)
-    print('******************************************************************')
     await dialog_manager.back()
 
 

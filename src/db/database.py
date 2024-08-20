@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine as _create_async_engine
 
 from config import settings as conf
-from db.repositories.bbr_repo.flash_card import FlashCardBebrisRepo
+from db.repositories.bbr_repo.flash_card import FlashCardBebrisRepo, FlashCardStatisticBebrisRepo
 
 from .repositories import UserRepo
 from .repositories.bbr_repo.playlist import PlaylistBebrisRepo
@@ -31,6 +31,7 @@ class Database:
     bbr_lesson: LessonBebrisRepo
     bbr_flash_card: FlashCardBebrisRepo
     bbr_lesson_statistic: LessonStatisticBebrisRepo
+    bbr_flash_card_statistic: FlashCardStatisticBebrisRepo
     """ User repository """
 
     session: AsyncSession
@@ -42,7 +43,8 @@ class Database:
         bbr_playlist: PlaylistBebrisRepo = None,
         bbr_lesson: LessonBebrisRepo = None,
         bbr_flash_card: FlashCardBebrisRepo = None,
-        bbr_lesson_statistic: LessonStatisticBebrisRepo = None
+        bbr_lesson_statistic: LessonStatisticBebrisRepo = None,
+        bbr_flash_card_statistic: FlashCardStatisticBebrisRepo = None
     ):
         """Initialize Database class.
 
@@ -55,3 +57,4 @@ class Database:
         self.bbr_lesson = bbr_lesson or LessonBebrisRepo(session=session)
         self.bbr_flash_card = bbr_flash_card or FlashCardBebrisRepo(session=session)
         self.bbr_lesson_statistic = bbr_lesson_statistic or LessonStatisticBebrisRepo(session=session)
+        self.bbr_flash_card_statistic = bbr_flash_card_statistic or FlashCardStatisticBebrisRepo(session=session)
