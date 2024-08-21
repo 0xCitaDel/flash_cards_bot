@@ -12,26 +12,27 @@ from aiogram_dialog.widgets.kbd import (
     Select
 )
 
+from bot.handlers.bebris.repitition.handlers import select_repeat_lessons
+
 from . import getters
-from . import handlers
-from .handlers import LessonHandler
+from .handlers import MainBebrisHandler
 from bot.aiogram_dialog.scrolling_group import ScrollingGroupCustom
 from bot.handlers.common_handlers import go_back
 from bot.handlers.handlers import main_menu 
-from bot.states import BebrisDialogSG, BebrisTrainDialogSG
+from bot.states import BebrisDialogSG
 
-handle = LessonHandler()
+handler = MainBebrisHandler()
 
 choice_playlist_window = Window(
     Const('Выбри цвет плейлиста'),
     ScrollingGroup(
         Group(
             Select(
-                Format('{item[2]} {item[1]}'),
+                Jinja('{{ item.emoji }} {{ item.playlist_name }}'),
                 id='playlist_btns',
                 items='playlists',
-                item_id_getter=lambda x: x[0],
-                on_click=handle.select_lesson
+                item_id_getter=lambda x: x['id'],
+                on_click=handler.select_lesson
             ),
         ),
         id='playlist_scroll',
@@ -41,7 +42,7 @@ choice_playlist_window = Window(
     ),
     Row(
         Button(Const('⏎ Назад'), id='main_menu', on_click=main_menu),
-        Button(Const('↻ Повторение'), id='repeat_mode', on_click=handlers.choice_repeat_mode),
+        Button(Const('↻ Повторение'), id='repeat_mode', on_click=select_repeat_lessons),
     ),
     getter=getters.playlist_getter,
     state=BebrisDialogSG.start
@@ -58,7 +59,10 @@ choice_lesson_window = Window(
         '<b>--- Выбери или введи номер урока ---</b>\n\n'
     ),
     List(
-        Format('{item[3]} <b>№{item[0]}</b>  {item[1]} {item[2]}'),
+        Jinja(
+            '{{ item.accuracy_emoji }} <b>№{{ item.pos }}</b> '
+            '{{ item.lesson_title }} {{ item.accuracy }}'
+        ),
         page_size=8,
         id='lessons_scroll',
         items='lessons'
@@ -66,11 +70,11 @@ choice_lesson_window = Window(
     ScrollingGroupCustom(
         Group(
             Select(
-                Format('{item[0]}'),
+                Jinja('{{ item.pos }}'),
                 id='lesson_btns',
                 items='lessons',
-                item_id_getter=lambda x: x[0],
-                on_click=handle.initialize_lesson
+                item_id_getter=lambda x: x['id'],
+                on_click=handler.initialize_lesson
             ),
         ),
         id='lessons_scroll',
@@ -80,7 +84,7 @@ choice_lesson_window = Window(
     ),
     TextInput(
         id='age_input',
-        on_success=handle.initialize_lesson_from_input
+        on_success=handler.initialize_lesson_from_input
     ),
     Row(
         Button(Const('⏎ Назад'), id='go_back_btn', on_click=go_back),
@@ -103,7 +107,7 @@ preparation_window = Window(
         'RU2EN - <i>с русского на английский</i>\n'
         'EN2RU - <i>с английского на русский</i>\n'
     ),
-    Button(Const('Начать'), id='start', on_click=handle.start_flashcard_session),
+    Button(Const('Начать'), id='start', on_click=handler.start_flashcard_session),
     Radio(
         checked_text=Format('🔘 {item[0]}'),
         unchecked_text=Format('⚪️ {item[0]}'),
@@ -113,7 +117,7 @@ preparation_window = Window(
     ),
     Row(
         Button(Const('⏎ Назад'), id='go_back_btn', on_click=go_back),
-        Button(Const('Показать карточки'), id='get_all_cards', on_click=handle.show_all_cards),
+        Button(Const('Показать карточки'), id='get_all_cards', on_click=handler.show_all_cards),
     ),
     parse_mode='HTML',
     getter=getters.preparation_getter,
@@ -143,10 +147,10 @@ flashcard_window = Window(
         '🔴 {{ total_wrong_answers }} - {{ total_correct_answers }} 🟢 ({{ accuracy_percent }}%)'
     ),
     Row(
-        Button(Const('Не помню'), id='wrong', on_click=handle.next_card_or_completion),
-        Button(Const('Помню'), id='correct', on_click=handle.next_card_or_completion),
+        Button(Const('Не помню'), id='wrong', on_click=handler.next_card_or_completion),
+        Button(Const('Помню'), id='correct', on_click=handler.next_card_or_completion),
     ),
-    Button(Const('Завершить'), id='lesson_exit', on_click=handle.lesson_exit),
+    Button(Const('Завершить'), id='lesson_exit', on_click=handler.lesson_exit),
     parse_mode='HTML',
     getter=getters.next_card_getter,
     state=BebrisDialogSG.next_card
@@ -179,33 +183,3 @@ bebris_dialog = Dialog(
     conclusion_window
 )
 
-choice_train_lesson_window = Window(
-    Jinja('<b>--- Выбери или введи номер урока ---</b>\n\n'),
-    # List(
-    #     Format('{item[3]} <b>№{item[0]}</b>  {item[1]} {item[2]}'),
-    #     page_size=8,
-    #     id='lessons_scroll',
-    #     items='lessons'
-    # ),
-    # ScrollingGroupCustom(
-    #     Group(
-    #         Select(
-    #             Format('{item[0]}'),
-    #             id='lesson_btns',
-    #             items='lessons',
-    #             item_id_getter=lambda x: x[0],
-    #             on_click=handlers.prepare_lesson_data
-    #         ),
-    #     ),
-    #     id='lessons_scroll',
-    #     width=8,
-    #     height=1,
-    #     hide_on_single_page=True,
-    # ),
-    Button(Const('Повторить все'), id='go_back_btn', on_click=go_back),
-    parse_mode='HTML',
-    getter=getters.repeat_lesson_getter,
-    state=BebrisTrainDialogSG.choice_repeat_lesson
-)
-
-bebris_train_dialog = Dialog(choice_train_lesson_window)

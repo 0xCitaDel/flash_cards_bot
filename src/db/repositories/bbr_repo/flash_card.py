@@ -2,9 +2,11 @@ from typing import Optional
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from sqlalchemy.sql import func
 from db.models.bbr_models import FlashCardBebris
 from db.models.bbr_models.flash_card import FlashCardStatisticBebris
+from db.models.bbr_models.lesson import LessonBebris
+from db.models.bbr_models.playlist import PlaylistBebris
 from db.repositories.abstract import AbstractRepository
 
 
@@ -28,6 +30,49 @@ class FlashCardStatisticBebrisRepo(AbstractRepository[FlashCardStatisticBebris])
     def __init__(self, session: AsyncSession):
         """Initialize user repository as for all users or only for one user."""
         super().__init__(type_model=FlashCardStatisticBebris, session=session)
+
+    async def get_flashcards(self, user_id: int, playlist_id: int, lesson_id: int):
+        query = select(
+            FlashCardStatisticBebris.flashcard_id,
+            FlashCardBebris.front_side,
+            FlashCardBebris.back_side,
+            FlashCardStatisticBebris.correct_count,
+            FlashCardStatisticBebris.last_result,
+        ).join(
+            FlashCardBebris, FlashCardStatisticBebris.flashcard_id == FlashCardBebris.id
+        ).where(
+            FlashCardStatisticBebris.user_id == user_id,
+            FlashCardStatisticBebris.playlist_id==playlist_id,
+            FlashCardStatisticBebris.lesson_id==lesson_id
+        )
+        return (await self.session.execute(query)).all()
+
+    async def get_lessons_by_user_id(self, user_id: int):
+        query = select(
+            FlashCardStatisticBebris.playlist_id,
+            FlashCardStatisticBebris.lesson_id,
+            PlaylistBebris.emoji,
+            PlaylistBebris.playlist_name,
+            LessonBebris.lesson_title,
+            LessonBebris.lesson_nubmer,
+            LessonBebris.video_nubmer,
+            func.count(FlashCardStatisticBebris.flashcard_id).label('card_count')
+        ).join(
+            PlaylistBebris, FlashCardStatisticBebris.playlist_id == PlaylistBebris.id
+        ).join(
+            LessonBebris, FlashCardStatisticBebris.lesson_id == LessonBebris.id
+        ).filter(
+            FlashCardStatisticBebris.user_id == user_id
+        ).group_by(
+            FlashCardStatisticBebris.playlist_id,
+            FlashCardStatisticBebris.lesson_id,
+            PlaylistBebris.emoji,
+            PlaylistBebris.playlist_name,
+            LessonBebris.lesson_title,
+            LessonBebris.lesson_nubmer,
+            LessonBebris.video_nubmer
+        )
+        return (await self.session.execute(query)).all()
 
     async def new(
             self,

@@ -21,7 +21,11 @@ class BebrisService:
         """
         playlists: Sequence[PlaylistBebris] = await self.db.bbr_playlist.get_all()
         playlist_items = [
-            (i.id, i.playlist_name, i.emoji, i.playlist_color)
+            {
+                'id': i.id,
+                'playlist_name': i.playlist_name,
+                'emoji': i.emoji
+            } 
             for i in playlists
         ]
         return playlist_items
@@ -41,7 +45,16 @@ class BebrisService:
         accuracy_emoji = lambda x: '⚫️' if x is None else '🔴'\
             if x < 60 else '🟠' if x < 90 else '🟢'
 
-        lesson_items = [(i[0], i[1], accuracy(i[2]), accuracy_emoji(i[2])) for i in lessons]
+        lesson_items = [
+            {
+                'id': i.id,
+                'pos': pos + 1,
+                'lesson_title': i.lesson_title,
+                'accuracy': accuracy(i.avg_accuracy),
+                'accuracy_emoji': accuracy_emoji(i.avg_accuracy)
+            }
+            for pos, i in enumerate(lessons)
+        ]
         return lesson_items
 
     async def get_cards_and_create_dialog_data(self, lesson_id: int) -> dict:

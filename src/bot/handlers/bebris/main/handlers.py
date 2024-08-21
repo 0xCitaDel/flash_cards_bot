@@ -1,7 +1,7 @@
 import random
 
 from aiogram.types import CallbackQuery, Message
-from aiogram_dialog import DialogManager
+from aiogram_dialog import Data, DialogManager
 from aiogram_dialog.widgets.input import ManagedTextInput
 from aiogram_dialog.widgets.kbd import Button, Select
 
@@ -10,7 +10,7 @@ from db.database import Database
 from services.bbr_cards import BebrisService
 
 
-class LessonHandler:
+class MainBebrisHandler:
 
     async def select_lesson(self, callback: CallbackQuery, widget: Select,
                             manager: DialogManager, item_id):
@@ -60,9 +60,10 @@ class LessonHandler:
                 f'⛔️ Введен недопустимый номер урока.'
                 f' Пожалуйста, укажите значение от 1 до {lessons_count} ⛔️'
             )
-
+        
+        item_id = manager.dialog_data['lessons'][int(text)-1]['id']
         # If the lesson number is valid, initialize the lesson
-        await self._initialize_lesson_data(manager, int(text))
+        await self._initialize_lesson_data(manager, item_id)
 
     async def show_all_cards(self, callback: CallbackQuery,
                              widget: Button, manager: DialogManager):
@@ -156,21 +157,3 @@ class LessonHandler:
         if all(ch.isdigit() for ch in text) and 1 <= int(text) <= lesson_count:
             return True
         return False
-
-
-async def choice_repeat_mode(
-    callback: CallbackQuery,
-    widget: Button,
-    manager: DialogManager
-):
-    """
-    Some here...
-    """
-    await manager.start(BebrisTrainDialogSG.choice_repeat_lesson)
-
-
-
-
-
-
-

@@ -4,7 +4,8 @@ from aiogram.types import  Message
 from aiogram_dialog import DialogManager, StartMode
 
 from .dialogs import main_dialog
-from bot.handlers.user.bebris_cards.dialogs import bebris_dialog, bebris_train_dialog
+from bot.handlers.bebris.main.dialogs import bebris_dialog
+from bot.handlers.bebris.repitition.dialogs import bebris_train_dialog
 from bot.states import MainSG
 
 

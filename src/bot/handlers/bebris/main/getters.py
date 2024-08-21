@@ -4,10 +4,6 @@ from db.database import Database
 from services import BebrisService
 
 
-async def repeat_lesson_getter(dialog_manager: DialogManager, **kwargs):
-    return {'playlists': 1}
-
-
 async def playlist_getter(db: Database, **kwargs):
     items = await BebrisService(db).get_playlists()
     return {'playlists': items}
