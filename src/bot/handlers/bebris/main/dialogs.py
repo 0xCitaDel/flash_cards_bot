@@ -12,7 +12,7 @@ from aiogram_dialog.widgets.kbd import (
     Select
 )
 
-from bot.handlers.bebris.repitition.handlers import select_repeat_lessons
+from bot.handlers.bebris.repitition.handlers import RepititionBebrisHandler
 
 from . import getters
 from .handlers import MainBebrisHandler
@@ -42,7 +42,7 @@ choice_playlist_window = Window(
     ),
     Row(
         Button(Const('⏎ Назад'), id='main_menu', on_click=main_menu),
-        Button(Const('↻ Повторение'), id='repeat_mode', on_click=select_repeat_lessons),
+        Button(Const('↻ Повторение'), id='repeat_mode', on_click=RepititionBebrisHandler().select_repeat_lessons),
     ),
     getter=getters.playlist_getter,
     state=BebrisDialogSG.start

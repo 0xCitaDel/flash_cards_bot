@@ -66,6 +66,9 @@ async def conclusion_getter(
     dialog_manager: DialogManager,
     **kwargs
 ):
+    """
+    TODO: make comment and finis handler
+    """
     data = dialog_manager.dialog_data
     return {
         'data': data['correct_answer_ids'],

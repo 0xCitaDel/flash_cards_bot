@@ -158,4 +158,4 @@ cython_debug/
 some.py
 dump.txt
 dump_all.txt
-!migrations/versions/*
+migrations/versions/*

@@ -70,6 +70,15 @@ class AbstractRepository(Generic[Model]):
         result = await self.session.scalars(statement)
         return result.all()
 
+    async def update(self, whereclause) -> None:
+        """Delete model from the database.
+
+        :param whereclause: (Optional) Which statement
+        :return: Nothing
+        """
+        statement = delete(self.type_model).where(whereclause)
+        await self.session.execute(statement)
+
     async def delete(self, whereclause) -> None:
         """Delete model from the database.
 

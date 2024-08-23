@@ -17,3 +17,5 @@ class BebrisDialogSG(StatesGroup):
 class BebrisTrainDialogSG(StatesGroup):
     repeat_lessons_list = State()
     initialize_lesson = State()
+    next_card = State()
+    results = State()

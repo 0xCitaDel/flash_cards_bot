@@ -108,6 +108,10 @@ class BebrisService:
         return {'accuracy_percent': accuracy}
 
     async def save_lesson_result(self, user_id: int, data: dict):
+        """
+        TODO: make comment and refacor code here.
+        change method name in repo
+        """
         await self.db.bbr_lesson_statistic.new(
             user_id=user_id,
             lesson_id=data['lesson_id'],
