@@ -89,7 +89,7 @@ class AbstractRepository(Generic[Model]):
         await self.session.execute(statement)
 
     @abc.abstractmethod
-    async def new(self, *args, **kwargs) -> None:
+    async def new(self, *args, **kwargs) -> Model:
         """Add new entry of model to the database.
 
         :return: Nothing.

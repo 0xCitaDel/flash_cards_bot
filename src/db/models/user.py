@@ -30,5 +30,3 @@ class User(Base):
     role: Mapped[Role] = mapped_column(
         sa.Enum(Role), default=Role.USER
     )
-
-

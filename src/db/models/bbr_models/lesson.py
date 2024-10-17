@@ -13,7 +13,7 @@ class LessonBebris(Base):
         sa.ForeignKey('bebris_playlists.id'), unique=False, nullable=False
     )
     lesson_title: Mapped[str] = mapped_column(
-        sa.String, unique=True, nullable=False
+        sa.String, unique=False, nullable=False
     )
     lesson_nubmer: Mapped[str] = mapped_column(
         sa.String, unique=False, nullable=False

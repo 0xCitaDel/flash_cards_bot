@@ -7,7 +7,6 @@ from aiogram_dialog.widgets.kbd import (
     Group,
     Radio,
     Row,
-    ScrollingGroup,
     Select
 )
 
@@ -57,6 +56,7 @@ train_lessons_list_window = Window(
 
 initialize_train_lesson_window = Window(
     Jinja('some'),
+    Button(Const('Начать'), id='start', on_click=handler.start_repitition_session),
     Radio(
         checked_text=Format('🔘 {item[0]}'),
         unchecked_text=Format('⚪️ {item[0]}'),
@@ -64,13 +64,27 @@ initialize_train_lesson_window = Window(
         item_id_getter=operator.itemgetter(1),
         items=[('RU to EN', '0'), ('EN to RU', '1')],
     ),
-    Button(Const('Начать'), id='start', on_click=handler.start_repitition_session),
+    Button(Const('Показать карточки'), id='get_all_cards', on_click=handler.show_all_cards),
     Row(
         Button(Const('⏎ Назад'), id='go_back_btn', on_click=go_back),
         Button(Const('☰ Mеню'), id='main_menu', on_click=main_menu),
     ),
     getter=getters.initialize_lesson_getter,
     state=BebrisTrainDialogSG.initialize_lesson
+)
+
+
+show_cards_window = Window(
+    Format('<b>Все карточки:</b>\n'),
+    List(
+        Jinja('{{ item.position }}. {{ item.front_side }} - {{ item.back_side }}'),
+        id='all_cards_scroll',
+        items='all_cards'
+    ),
+    Button(Const('⏎ Назад'), id='go_back_btn', on_click=go_back),
+    parse_mode='HTML',
+    getter=getters.show_all_cards_getter,
+    state=BebrisTrainDialogSG.show_cards
 )
 
 
@@ -85,12 +99,19 @@ train_lesson_window = Window(
         Button(Const('Не помню'), id='wrong', on_click=handler.next_card_or_completion),
         Button(Const('Помню'), id='correct', on_click=handler.next_card_or_completion),
     ),
-    # Button(Const('Завершить'), id='lesson_exit', on_click=handler.lesson_exit),
+    Button(Const('Завершить'), id='lesson_exit', on_click=handler.lesson_exit),
     parse_mode='HTML',
     getter=getters.next_card_getter,
     state=BebrisTrainDialogSG.next_card
 )
 
+lesson_exit_window = Window(
+    Const('Вы уверены, что хотите выйти?'),
+    Button(Const('Да, выйти и сохранить'), id='main_menu', on_click=main_menu),
+    Button(Const('⏎ Отмена'), id='go_back_btn', on_click=go_back),
+    parse_mode='HTML',
+    state=BebrisTrainDialogSG.exit
+)
 
 train_results_window = Window(
     Jinja('{{ data }} : {{ data2 }}'),
@@ -99,9 +120,12 @@ train_results_window = Window(
     state=BebrisTrainDialogSG.results
 )
 
+
 bebris_train_dialog = Dialog(
     train_lessons_list_window,
     initialize_train_lesson_window,
+    show_cards_window,
     train_lesson_window, 
+    lesson_exit_window,
     train_results_window 
 )

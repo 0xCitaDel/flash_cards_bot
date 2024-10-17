@@ -28,7 +28,7 @@ choice_playlist_window = Window(
     ScrollingGroup(
         Group(
             Select(
-                Jinja('{{ item.emoji }} {{ item.playlist_name }}'),
+                Jinja('{{ item.emoji }}  {{ item.playlist_name }}'),
                 id='playlist_btns',
                 items='playlists',
                 item_id_getter=lambda x: x['id'],
@@ -37,12 +37,17 @@ choice_playlist_window = Window(
         ),
         id='playlist_scroll',
         width=1,
-        height=5,
+        height=8,
         hide_on_single_page=True,
+    ),
+    Button(
+        Const('💭 Карточки для повторения'),
+        id='repeat_mode',
+        on_click=RepititionBebrisHandler().select_repeat_lessons
     ),
     Row(
         Button(Const('⏎ Назад'), id='main_menu', on_click=main_menu),
-        Button(Const('↻ Повторение'), id='repeat_mode', on_click=RepititionBebrisHandler().select_repeat_lessons),
+        Button(Const('Помощь'), id='main_menu', on_click=main_menu),
     ),
     getter=getters.playlist_getter,
     state=BebrisDialogSG.start
@@ -53,8 +58,9 @@ choice_lesson_window = Window(
     Jinja(
         '<b>--- Памятка ---</b>\n\n'
         '<blockquote>Прогресс показывает средний процент правильных ответов за последние три урока.</blockquote>\n\n'
-        '🔴 - <i>Прогресс меньше 60%</i>\n'
-        '🟠 - <i>Прогресс 60-90%</i>\n'
+        '🔴 - <i>Прогресс меньше 50%</i>\n'
+        '🟠 - <i>Прогресс 50-70%</i>\n'
+        '🟡 - <i>Прогресс 70-90%</i>\n'
         '🟢 - <i>Прогресс 90-100%</i>\n\n'
         '<b>--- Выбери или введи номер урока ---</b>\n\n'
     ),

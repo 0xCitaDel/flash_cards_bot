@@ -1,9 +1,8 @@
 from operator import le
 import random
 
-from aiogram.types import CallbackQuery, Message
-from aiogram_dialog import Data, DialogManager
-from aiogram_dialog.widgets.input import ManagedTextInput
+from aiogram.types import CallbackQuery
+from aiogram_dialog import DialogManager
 from aiogram_dialog.widgets.kbd import Button, Select
 
 from bot.states import BebrisTrainDialogSG
@@ -74,6 +73,13 @@ class RepititionBebrisHandler:
 
         await manager.switch_to(BebrisTrainDialogSG.initialize_lesson)
 
+    async def show_all_cards(self, callback: CallbackQuery,
+                             widget: Button, manager: DialogManager):
+        """
+        Handler for showing all flashcards
+        """
+        await manager.switch_to(BebrisTrainDialogSG.show_cards)
+
     async def start_repitition_session(self, callback: CallbackQuery,
                          widget: Button, manager: DialogManager):
         """
@@ -113,6 +119,13 @@ class RepititionBebrisHandler:
 
         await self._move_to_next_card_or_finish(db, manager, data)
 
+    async def lesson_exit(self, callback: CallbackQuery,
+                          widget: Button, manager: DialogManager):
+        """
+        Handler for exiting the lesson
+        """
+        await manager.switch_to(BebrisTrainDialogSG.exit)
+
     async def _process_correct_answer(self, db: Database, current_card: dict, data: dict):
         card_id = current_card['flashcard_id']
         data['correct_answer_ids'].append(card_id)
@@ -149,4 +162,3 @@ class RepititionBebrisHandler:
             await manager.switch_to(BebrisTrainDialogSG.next_card)
         else:
             await manager.switch_to(BebrisTrainDialogSG.results)
-        pass

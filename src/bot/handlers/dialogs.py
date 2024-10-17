@@ -13,16 +13,16 @@ main_window = Window(
         id='bebris_btn',
         on_click=handlers.bebris_dialog_start
     ),
-    Button(
-        Const('📁 Мои карточки'),
-        id='bebris_btn',
-        on_click=handlers.bebris_dialog_start
-    ),
-    Button(
-        Const('⚙️ Настройки'),
-        id='bebris_btn',
-        on_click=handlers.bebris_dialog_start
-    ),
+    # Button(
+    #     Const('📁 Мои карточки'),
+    #     id='bebris_btn',
+    #     on_click=handlers.bebris_dialog_start
+    # ),
+    # Button(
+    #     Const('⚙️ Настройки'),
+    #     id='bebris_btn',
+    #     on_click=handlers.bebris_dialog_start
+    # ),
     state=MainSG.start
 )
 

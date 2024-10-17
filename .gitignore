@@ -157,5 +157,5 @@ cython_debug/
 # Other
 some.py
 dump.txt
-dump_all.txt
-migrations/versions/*
+migrations/versions/*.py
+dump/

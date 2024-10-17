@@ -43,7 +43,7 @@ class BebrisService:
         )
         accuracy = lambda x: '' if x is None else f' | {x}%'
         accuracy_emoji = lambda x: '⚫️' if x is None else '🔴'\
-            if x < 60 else '🟠' if x < 90 else '🟢'
+            if x < 50 else '🟠' if x < 70 else '🟡' if x < 90 else '🟢'
 
         lesson_items = [
             {

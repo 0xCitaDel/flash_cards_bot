@@ -18,7 +18,7 @@ class UserRepo(AbstractRepository[User]):
     async def get_by_user_id(self, user_id):
 
         query = select(self.type_model).where(User.user_id==user_id)
-        res = (await self.session.execute(query)).first()
+        res = (await self.session.execute(query)).scalar()
         return res
 
     async def new(
@@ -30,7 +30,7 @@ class UserRepo(AbstractRepository[User]):
             is_premium: bool=False,
             is_banned: bool=False,
             role: Role=Role.USER
-    ) -> None:
+    ) -> User:
         """Insert a new user into the database.
 
         :param user_id: Telegram user id
@@ -41,7 +41,7 @@ class UserRepo(AbstractRepository[User]):
         :param is_banned: Checks if the user is banned
         :param role: User's role
         """
-        await self.session.merge(
+        res = await self.session.merge(
             User(
                 user_id=user_id,
                 user_name=user_name,
@@ -52,6 +52,7 @@ class UserRepo(AbstractRepository[User]):
                 role=role
             )
         )
+        return res
 
     async def get_role(self, user_id: int) -> Role:
         """Get user role by id."""

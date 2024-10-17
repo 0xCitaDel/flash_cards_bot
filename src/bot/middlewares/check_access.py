@@ -34,4 +34,4 @@ class CheckAccessMiddleware(BaseMiddleware):
             )
 
             await db.session.commit()
-        return current_user[0]
+        return current_user
