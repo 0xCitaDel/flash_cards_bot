@@ -15,10 +15,10 @@ class LessonBebris(Base):
     lesson_title: Mapped[str] = mapped_column(
         sa.String, unique=False, nullable=False
     )
-    lesson_nubmer: Mapped[str] = mapped_column(
+    lesson_number: Mapped[str] = mapped_column(
         sa.String, unique=False, nullable=False
     )
-    video_nubmer: Mapped[str] = mapped_column(
+    video_number: Mapped[str] = mapped_column(
         sa.String, unique=False, nullable=False
     )
     def __repr__(self) -> str:

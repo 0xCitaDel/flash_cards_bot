@@ -26,6 +26,8 @@ class MainBebrisHandler:
         # Store the selected playlist ID in the dialog data as an integer
         manager.dialog_data['playlist_id'] = int(item_id)
 
+        manager.current_context().widget_data['lessons_scroll'] = 4
+
         # Fetch the lessons and store them in dialog data
         manager.dialog_data['lessons'] = await BebrisService(db).get_lessons(
             user_id=user_id,

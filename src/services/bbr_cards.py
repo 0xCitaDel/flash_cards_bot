@@ -50,6 +50,7 @@ class BebrisService:
                 'id': i.id,
                 'pos': pos + 1,
                 'lesson_title': i.lesson_title,
+                'lesson_number': i.lesson_number,
                 'accuracy': accuracy(i.avg_accuracy),
                 'accuracy_emoji': accuracy_emoji(i.avg_accuracy)
             }

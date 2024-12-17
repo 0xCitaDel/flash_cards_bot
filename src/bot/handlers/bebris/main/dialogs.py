@@ -67,9 +67,9 @@ choice_lesson_window = Window(
     List(
         Jinja(
             '{{ item.accuracy_emoji }} <b>№{{ item.pos }}</b> '
-            '{{ item.lesson_title }} {{ item.accuracy }}'
+            '{{ item.lesson_title }} ({{ item.lesson_number }} lesson) {{ item.accuracy }}'
         ),
-        page_size=8,
+        page_size=21,
         id='lessons_scroll',
         items='lessons'
     ),
@@ -84,8 +84,8 @@ choice_lesson_window = Window(
             ),
         ),
         id='lessons_scroll',
-        width=8,
-        height=1,
+        width=7,
+        height=3,
         hide_on_single_page=True,
     ),
     TextInput(
@@ -173,7 +173,15 @@ lesson_exit_window = Window(
 
 
 conclusion_window = Window(
-    Format('{data} = {data2}'),
+    Jinja(
+        '🏆 Вы завершили тренировку!\n\n'
+        'Ваша статистика:\n'
+        '- 🍏 Верных ответов: {{ total_correct_answers }}\n'
+        '- ✖️ Ошибок: {{ total_wrong_answers }}\n'
+        '- 🎯 Точность: {{ accuracy_percent }}%\n\n'
+        'Продолжайте в том же духе!'
+    ),
+    Button(Const('☰ Mеню'), id='main_menu', on_click=main_menu),
     getter=getters.conclusion_getter,
     state=BebrisDialogSG.conclusion
 )
@@ -188,4 +196,3 @@ bebris_dialog = Dialog(
     lesson_exit_window,
     conclusion_window
 )
-

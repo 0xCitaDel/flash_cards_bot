@@ -39,8 +39,8 @@ class RepititionService:
                 'emoji'         : lesson_data.emoji,
                 'playlist_name' : lesson_data.playlist_name,
                 'lesson_title'  : lesson_data.lesson_title,
-                'lesson_number' : lesson_data.lesson_nubmer, # TODO: correct spelling mistake 
-                'video_number'  : lesson_data.video_nubmer,  # i.lesson_nuBMer - need i.lesson_nuMBer
+                'lesson_number' : lesson_data.lesson_number,
+                'video_number'  : lesson_data.video_number,
                 'card_count'    : lesson_data.card_count
             }
             for pos, lesson_data in enumerate(lessons)

@@ -89,8 +89,8 @@ class FlashCardStatisticBebrisRepo(AbstractRepository[FlashCardStatisticBebris])
                 PlaylistBebris.emoji,
                 PlaylistBebris.playlist_name,
                 LessonBebris.lesson_title,
-                LessonBebris.lesson_nubmer,
-                LessonBebris.video_nubmer,
+                LessonBebris.lesson_number,
+                LessonBebris.video_number,
                 func.count(FlashCardStatisticBebris.flashcard_id).label('card_count')
             )
             .join(
@@ -110,8 +110,8 @@ class FlashCardStatisticBebrisRepo(AbstractRepository[FlashCardStatisticBebris])
                 PlaylistBebris.emoji,
                 PlaylistBebris.playlist_name,
                 LessonBebris.lesson_title,
-                LessonBebris.lesson_nubmer,
-                LessonBebris.video_nubmer
+                LessonBebris.lesson_number,
+                LessonBebris.video_number
             )
         )
         return (await self.session.execute(query)).all()

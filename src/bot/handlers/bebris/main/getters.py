@@ -10,6 +10,7 @@ async def playlist_getter(db: Database, **kwargs):
 
 
 async def lessons_getter(dialog_manager: DialogManager, **kwargs):
+    print(dialog_manager.current_context())
     return {'lessons': dialog_manager.dialog_data['lessons']}
 
 
@@ -67,10 +68,11 @@ async def conclusion_getter(
     **kwargs
 ):
     """
-    TODO: make comment and finis handler
+    Returns statistics for a completed lesson from the dialog data.
     """
     data = dialog_manager.dialog_data
     return {
-        'data': data['correct_answer_ids'],
-        'data2': data['wrong_answer_ids']
+        'total_correct_answers': len(data['correct_answer_ids']),
+        'total_wrong_answers': len(data['wrong_answer_ids']),
+        'accuracy_percent': data['accuracy_percent']
     }

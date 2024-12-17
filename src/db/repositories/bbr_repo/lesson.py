@@ -39,7 +39,8 @@ class LessonBebrisRepo(AbstractRepository[LessonBebris]):
             select(
                 LessonBebris.id,
                 LessonBebris.lesson_title,
-                subquery.c.avg_accuracy
+                subquery.c.avg_accuracy,
+                LessonBebris.lesson_number
             )
             .outerjoin(subquery, LessonBebris.id == subquery.c.lesson_id)
             .where(((subquery.c.rn == 1) |  (subquery.c.lesson_id == None)) & (LessonBebris.playlist_id == playlist_id))
