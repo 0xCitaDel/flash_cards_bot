@@ -18,10 +18,10 @@ class RepititionService:
         """
         This function returns a list of lessons that the user needs to repeat.
         The result of this function is passed to the start_data of dialog_manager.
-        
+
         Arguments:
             user_id (int): The ID of the user.
-        
+
         Returns:
             data (list): A list of dictionaries with data about each lesson.
         """

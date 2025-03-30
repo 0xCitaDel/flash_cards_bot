@@ -1,4 +1,4 @@
-from aiogram.fsm.state import StatesGroup, State
+from aiogram.fsm.state import State, StatesGroup
 
 
 class MainSG(StatesGroup):
@@ -11,8 +11,9 @@ class BebrisDialogSG(StatesGroup):
     preparation = State()
     show_all_cards = State()
     next_card = State()
-    lesson_exit= State()
+    lesson_exit = State()
     conclusion = State()
+
 
 class BebrisTrainDialogSG(StatesGroup):
     repeat_lessons_list = State()
